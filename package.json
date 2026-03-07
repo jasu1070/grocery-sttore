@@ -1,0 +1,27 @@
+{
+  "name": "grocery-sttore",
+  "version": "1.0.0",
+  "description": "local shop",
+  "main": "app.js",
+  "homepage": "https://jasu1070.github.io/grocery-sttore/",
+  "scripts": {
+    "predeploy": "git add -A .",
+    "deploy": "gh-pages -d .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasu1070/grocery-sttore.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jasu1070/grocery-sttore/issues"
+  },
+  "homepage": "https://github.com/jasu1070/grocery-sttore#readme",
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
