@@ -16,18 +16,31 @@ async function loadComponent(id, file) {
 
 // ─── INIT ───
 document.addEventListener("DOMContentLoaded", async () => {
-  // Load components sequentially to maintain order and structure
-  await loadComponent("navbar-placeholder", "navbar.html");
-  await loadComponent("hero-placeholder", "hero.html");
-  await loadComponent("products-placeholder", "products.html");
-  await loadComponent("about-placeholder", "about.html");
-  await loadComponent("contact-placeholder", "contact.html");
-  await loadComponent("footer-placeholder", "footer.html");
-  await loadComponent("cart-placeholder", "cart.html");
+  // Load components in parallel for better performance
+  const components = [
+    { id: "navbar-placeholder", file: "navbar.html" },
+    { id: "hero-placeholder", file: "hero.html" },
+    { id: "products-placeholder", file: "products.html" },
+    { id: "about-placeholder", file: "about.html" },
+    { id: "contact-placeholder", file: "contact.html" },
+    { id: "footer-placeholder", file: "footer.html" },
+    { id: "cart-placeholder", file: "cart.html" }
+  ];
 
-  // Set store name from config
+  await Promise.all(components.map(c => loadComponent(c.id, c.file)));
+
+  // Set dynamic values from config
   const brandEls = document.querySelectorAll(".nav-brand, footer span, .footer-brand h2");
   brandEls.forEach(el => el.textContent = window.CONFIG.STORE_NAME);
+
+  // Set email links and text
+  const emailLinks = document.querySelectorAll(".store-email");
+  emailLinks.forEach(link => {
+    link.setAttribute("href", `mailto:${window.CONFIG.STORE_EMAIL}`);
+    if (link.textContent.toLowerCase().includes("loading") || link.textContent.includes(window.CONFIG.STORE_EMAIL)) {
+      link.textContent = window.CONFIG.STORE_EMAIL;
+    }
+  });
   
   // Set WhatsApp links and text
   const waLinks = document.querySelectorAll('a[href*="wa.me"]');
