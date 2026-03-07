@@ -7,7 +7,7 @@ async function loadComponent(id, file) {
   if (!el) return;
   try {
     const response = await fetch(`components/${file}`);
-    const text = await response.json ? await response.json() : await response.text();
+    const text = await response.text();
     el.innerHTML = text;
   } catch (error) {
     console.error(`Failed to load component ${file}:`, error);
