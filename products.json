@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Fresh Grocery Pack",   "price": 299, "img": "assets/fresh_grocery.png" },
+  { "id": 2, "name": "Daily Essentials Kit",  "price": 499, "img": "assets/essentials_kit.png" },
+  { "id": 3, "name": "Premium Snack Box",     "price": 199, "img": "assets/snack_box.png" },
+  { "id": 4, "name": "Household Combo",       "price": 349, "img": "assets/fresh_grocery.png" },
+  { "id": 5, "name": "Weekend Special",       "price": 599, "img": "assets/essentials_kit.png" },
+  { "id": 6, "name": "Breakfast Bundle",      "price": 249, "img": "assets/snack_box.png" }
+]
