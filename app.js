@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     { id: "about-placeholder", file: "about.html" },
     { id: "contact-placeholder", file: "contact.html" },
     { id: "footer-placeholder", file: "footer.html" },
-    { id: "cart-placeholder", file: "cart.html" }
+    { id: "cart-placeholder", file: "cart.html" },
+    { id: "search-placeholder", file: "search.html" }
   ];
 
   await Promise.all(components.map(c => loadComponent(c.id, c.file)));
@@ -59,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("products.json");
     products = await response.json();
     renderProducts();
+    renderTrending();
   } catch (error) {
     console.error("Failed to load products:", error);
     showToast("Error loading products. Please refresh.");
@@ -72,6 +74,76 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateCartUI();
 });
+
+// ─── SEARCH LOGIC ───
+function toggleSearch() {
+  const overlay = document.getElementById("searchOverlay");
+  const drawer = document.getElementById("searchDrawer");
+  if (overlay && drawer) {
+    overlay.classList.toggle("open");
+    drawer.classList.toggle("open");
+    if (drawer.classList.contains("open")) {
+      setTimeout(() => document.getElementById("searchInput").focus(), 400);
+    }
+    document.body.style.overflow = drawer.classList.contains("open") ? "hidden" : "";
+  }
+}
+
+function handleSearch(query) {
+  const defaultState = document.getElementById("searchDefaultState");
+  const resultsState = document.getElementById("searchResultsState");
+  const resultsGrid = document.getElementById("searchResultsGrid");
+  const countEl = document.getElementById("resultsCount");
+  
+  if (!query.trim()) {
+    defaultState.style.display = "block";
+    resultsState.style.display = "none";
+    return;
+  }
+
+  defaultState.style.display = "none";
+  resultsState.style.display = "block";
+
+  const filtered = products.filter(p => 
+    p.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  countEl.textContent = filtered.length;
+  resultsGrid.innerHTML = filtered.map(p => `
+    <div class="result-card" onclick="addToCart(${p.id}); toggleSearch();">
+      <div class="result-img-wrap">
+        <img class="result-item-img" src="${p.img}" alt="${p.name}" />
+      </div>
+      <div class="result-info">
+        <span class="result-name">${p.name}</span>
+        <span class="result-price">${window.CONFIG.CURRENCY}${p.price}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function fillSearch(val) {
+  const input = document.getElementById("searchInput");
+  input.value = val;
+  handleSearch(val);
+}
+
+function renderTrending() {
+  const trendingList = document.getElementById("trendingList");
+  if (!trendingList) return;
+  
+  // Just pick first 3 items as trending for now
+  const trending = products.slice(0, 3);
+  trendingList.innerHTML = trending.map(p => `
+    <div class="trending-item" onclick="addToCart(${p.id}); toggleSearch();">
+      <img class="trending-img" src="${p.img}" alt="${p.name}" />
+      <div class="trending-info">
+        <span>${p.name}</span>
+        <small>${window.CONFIG.CURRENCY}${p.price}</small>
+      </div>
+    </div>
+  `).join("");
+}
 
 // ─── RENDER PRODUCTS ───
 function renderProducts() {
