@@ -1,11 +1,46 @@
 let products = [];
 let cart = [];
 
+// ─── COMPONENT LOADER ───
+async function loadComponent(id, file) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const response = await fetch(`components/${file}`);
+    const text = await response.text();
+    el.innerHTML = text;
+  } catch (error) {
+    console.error(`Failed to load component ${file}:`, error);
+  }
+}
+
 // ─── INIT ───
 document.addEventListener("DOMContentLoaded", async () => {
-  // Set store name from config
-  const brandEls = document.querySelectorAll(".nav-brand, footer span");
+  // Load components in parallel for better performance
+  const components = [
+    { id: "navbar-placeholder", file: "navbar.html" },
+    { id: "hero-placeholder", file: "hero.html" },
+    { id: "products-placeholder", file: "products.html" },
+    { id: "about-placeholder", file: "about.html" },
+    { id: "contact-placeholder", file: "contact.html" },
+    { id: "footer-placeholder", file: "footer.html" },
+    { id: "cart-placeholder", file: "cart.html" }
+  ];
+
+  await Promise.all(components.map(c => loadComponent(c.id, c.file)));
+
+  // Set dynamic values from config
+  const brandEls = document.querySelectorAll(".nav-brand, footer span, .footer-brand h2");
   brandEls.forEach(el => el.textContent = window.CONFIG.STORE_NAME);
+
+  // Set email links and text
+  const emailLinks = document.querySelectorAll(".store-email");
+  emailLinks.forEach(link => {
+    link.setAttribute("href", `mailto:${window.CONFIG.STORE_EMAIL}`);
+    if (link.textContent.toLowerCase().includes("loading") || link.textContent.includes(window.CONFIG.STORE_EMAIL)) {
+      link.textContent = window.CONFIG.STORE_EMAIL;
+    }
+  });
   
   // Set WhatsApp links and text
   const waLinks = document.querySelectorAll('a[href*="wa.me"]');
@@ -14,7 +49,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const newHref = originalHref.replace(/wa\.me\/\d+/, `wa.me/${window.CONFIG.WHATSAPP_NUMBER}`);
     link.setAttribute("href", newHref);
     
-    // Update text content if it looks like a phone number
     if (link.textContent.includes("9999999999")) {
       link.textContent = `+${window.CONFIG.WHATSAPP_NUMBER}`;
     }
@@ -32,7 +66,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Nav scroll listener
   window.addEventListener("scroll", () => {
-    document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 20);
+    const nav = document.getElementById("navbar");
+    if (nav) nav.classList.toggle("scrolled", window.scrollY > 20);
   });
 
   updateCartUI();
@@ -59,7 +94,8 @@ function renderProducts() {
 
 // ─── CAROUSEL ───
 function scrollCarousel(dir) {
-  document.getElementById("carousel").scrollBy({ left: dir * 300, behavior: "smooth" });
+  const carousel = document.getElementById("carousel");
+  if (carousel) carousel.scrollBy({ left: dir * 300, behavior: "smooth" });
 }
 
 // ─── CART LOGIC ───
@@ -125,7 +161,8 @@ function updateCartUI() {
 
   footerEl.style.display = "block";
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  document.getElementById("cartTotal").textContent = `${window.CONFIG.CURRENCY}${total}`;
+  const totalEl = document.getElementById("cartTotal");
+  if (totalEl) totalEl.textContent = `${window.CONFIG.CURRENCY}${total}`;
 
   itemsEl.innerHTML = cart.map(i => `
     <div class="cart-item">
@@ -140,9 +177,7 @@ function updateCartUI() {
         </div>
       </div>
       <button class="remove-item" onclick="removeFromCart(${i.id})">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
   `).join("");
@@ -150,13 +185,16 @@ function updateCartUI() {
 
 // ─── CART TOGGLE ───
 function toggleCart() {
-  document.getElementById("cartOverlay").classList.toggle("open");
-  document.getElementById("cartDrawer").classList.toggle("open");
-  document.body.style.overflow =
-    document.getElementById("cartDrawer").classList.contains("open") ? "hidden" : "";
+  const overlay = document.getElementById("cartOverlay");
+  const drawer = document.getElementById("cartDrawer");
+  if (overlay && drawer) {
+    overlay.classList.toggle("open");
+    drawer.classList.toggle("open");
+    document.body.style.overflow = drawer.classList.contains("open") ? "hidden" : "";
+  }
 }
 
-// ─── SEND ORDER VIA FORMSPREE ───
+// ─── SEND ORDER ───
 async function sendOrder() {
   const name = document.getElementById("custName").value.trim();
   const phone = document.getElementById("custPhone").value.trim();
