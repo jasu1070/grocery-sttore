@@ -73,6 +73,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   updateCartUI();
+
+  // Escape key to close overlays
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const searchBox = document.getElementById("searchDrawer");
+      const cartBox = document.getElementById("cartDrawer");
+      if (searchBox && searchBox.classList.contains("open")) toggleSearch();
+      if (cartBox && cartBox.classList.contains("open")) toggleCart();
+    }
+  });
 });
 
 // ─── SEARCH LOGIC ───
