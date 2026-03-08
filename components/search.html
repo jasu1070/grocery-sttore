@@ -1,87 +1,86 @@
-<!-- SEARCH MODAL CONTAINER -->
-<div id="searchContainer">
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="toggleSearch()"></div>
 
-  <!-- Overlay -->
-  <div id="searchOverlay" onclick="toggleSearch()"></div>
+<!-- SEARCH DRAWER -->
+<div class="search-drawer" id="searchDrawer">
 
-  <!-- Search Panel -->
-  <div id="searchDrawer">
+  <!-- HEADER -->
+  <div class="search-header">
 
-    <!-- Search Header -->
-    <header class="search-header">
+    <div class="search-input-wrap">
 
-      <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
 
-        <!-- Search Icon -->
-        <span class="search-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </span>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search groceries, fruits, vegetables..."
+        oninput="handleSearch(this.value)"
+        autocomplete="off"
+      />
 
-        <!-- Search Input -->
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search groceries, fruits, vegetables..."
-          oninput="handleSearch(this.value)"
-          autocomplete="off"
-        />
+    </div>
+
+    <button class="close-search" onclick="toggleSearch()" aria-label="Close search">
+
+      <svg viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2"
+      stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+
+    </button>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="search-content">
+
+    <!-- DEFAULT STATE -->
+    <div id="searchDefaultState">
+
+      <div class="search-section">
+        <h4>Popular Searches</h4>
+
+        <div class="suggestion-tags">
+
+          <button class="tag" onclick="fillSearch('Organic')">Organic</button>
+          <button class="tag" onclick="fillSearch('Fresh Fruits')">Fresh Fruits</button>
+          <button class="tag" onclick="fillSearch('Dairy')">Dairy</button>
+          <button class="tag" onclick="fillSearch('Snacks')">Snacks</button>
+          <button class="tag" onclick="fillSearch('Vegetables')">Vegetables</button>
+
+        </div>
 
       </div>
 
-      <!-- Close Button -->
-      <button type="button" onclick="toggleSearch()" aria-label="Close search">
-        <svg viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2"
-        stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <div class="search-section">
 
-    </header>
+        <h4>Trending Items</h4>
 
-    <!-- Search Body -->
-    <div class="search-body">
-
-      <!-- Default Suggestions -->
-      <section id="searchDefaultState">
-
-        <h3>Popular Searches</h3>
-
-        <div class="popular-searches">
-
-          <button onclick="fillSearch('Organic')">Organic</button>
-          <button onclick="fillSearch('Fresh Fruits')">Fresh Fruits</button>
-          <button onclick="fillSearch('Dairy')">Dairy</button>
-          <button onclick="fillSearch('Snacks')">Snacks</button>
-          <button onclick="fillSearch('Vegetables')">Vegetables</button>
-
+        <div class="trending-list" id="trendingList">
+          <!-- Injected by app.js -->
         </div>
 
-        <h3>Trending Items</h3>
+      </div>
 
-        <div id="trendingList">
-          <!-- Injected from app.js -->
-        </div>
+    </div>
 
-      </section>
+    <!-- RESULTS -->
+    <div id="searchResultsState" style="display:none;">
 
-      <!-- Search Results -->
-      <section id="searchResultsState" hidden>
+      <div class="results-header">
+        <span id="resultsCount">0</span> results found
+      </div>
 
-        <div class="results-info">
-          <strong id="resultsCount">0</strong> results found
-        </div>
-
-        <div id="searchResultsGrid">
-          <!-- Injected from app.js -->
-        </div>
-
-      </section>
+      <div class="results-grid" id="searchResultsGrid">
+        <!-- Injected by app.js -->
+      </div>
 
     </div>
 
